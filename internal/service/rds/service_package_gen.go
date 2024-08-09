@@ -19,11 +19,23 @@ import (
 type servicePackage struct{}
 
 func (p *servicePackage) FrameworkDataSources(ctx context.Context) []*types.ServicePackageFrameworkDataSource {
-	return []*types.ServicePackageFrameworkDataSource{}
+	return []*types.ServicePackageFrameworkDataSource{
+		{
+			Factory: newClusterParameterGroupDataSource,
+			Name:    "Cluster Parameter Group",
+		},
+	}
 }
 
 func (p *servicePackage) FrameworkResources(ctx context.Context) []*types.ServicePackageFrameworkResource {
 	return []*types.ServicePackageFrameworkResource{
+		{
+			Factory: newIntegrationResource,
+			Name:    "Integration",
+			Tags: &types.ServicePackageResourceTags{
+				IdentifierAttribute: names.AttrARN,
+			},
+		},
 		{
 			Factory: newResourceExportTask,
 		},
@@ -39,8 +51,9 @@ func (p *servicePackage) SDKDataSources(ctx context.Context) []*types.ServicePac
 			Tags:     &types.ServicePackageResourceTags{},
 		},
 		{
-			Factory:  DataSourceEventCategories,
+			Factory:  dataSourceEventCategories,
 			TypeName: "aws_db_event_categories",
+			Name:     "Event Categories",
 		},
 		{
 			Factory:  DataSourceInstance,
@@ -53,8 +66,9 @@ func (p *servicePackage) SDKDataSources(ctx context.Context) []*types.ServicePac
 			TypeName: "aws_db_instances",
 		},
 		{
-			Factory:  DataSourceParameterGroup,
+			Factory:  dataSourceParameterGroup,
 			TypeName: "aws_db_parameter_group",
+			Name:     "DB Parameter Group",
 		},
 		{
 			Factory:  dataSourceProxy,
@@ -73,24 +87,30 @@ func (p *servicePackage) SDKDataSources(ctx context.Context) []*types.ServicePac
 			Name:     "DB Subnet Group",
 		},
 		{
-			Factory:  DataSourceCertificate,
+			Factory:  dataSourceCertificate,
 			TypeName: "aws_rds_certificate",
+			Name:     "Certificate",
 		},
 		{
-			Factory:  DataSourceCluster,
+			Factory:  dataSourceCluster,
 			TypeName: "aws_rds_cluster",
+			Name:     "Cluster",
+			Tags:     &types.ServicePackageResourceTags{},
 		},
 		{
-			Factory:  DataSourceClusters,
+			Factory:  dataSourceClusters,
 			TypeName: "aws_rds_clusters",
+			Name:     "Clusters",
 		},
 		{
-			Factory:  DataSourceEngineVersion,
+			Factory:  dataSourceEngineVersion,
 			TypeName: "aws_rds_engine_version",
+			Name:     "Engine Version",
 		},
 		{
-			Factory:  DataSourceOrderableInstance,
+			Factory:  dataSourceOrderableInstance,
 			TypeName: "aws_rds_orderable_db_instance",
+			Name:     "Orderable DB Instance",
 		},
 		{
 			Factory:  dataSourceReservedOffering,
@@ -127,15 +147,17 @@ func (p *servicePackage) SDKResources(ctx context.Context) []*types.ServicePacka
 			},
 		},
 		{
-			Factory:  ResourceInstanceAutomatedBackupsReplication,
+			Factory:  resourceInstanceAutomatedBackupsReplication,
 			TypeName: "aws_db_instance_automated_backups_replication",
+			Name:     "Instance Automated Backups Replication",
 		},
 		{
-			Factory:  ResourceInstanceRoleAssociation,
+			Factory:  resourceInstanceRoleAssociation,
 			TypeName: "aws_db_instance_role_association",
+			Name:     "DB Instance IAM Role Association",
 		},
 		{
-			Factory:  ResourceOptionGroup,
+			Factory:  resourceOptionGroup,
 			TypeName: "aws_db_option_group",
 			Name:     "DB Option Group",
 			Tags: &types.ServicePackageResourceTags{
@@ -214,8 +236,9 @@ func (p *servicePackage) SDKResources(ctx context.Context) []*types.ServicePacka
 			},
 		},
 		{
-			Factory:  ResourceClusterActivityStream,
+			Factory:  resourceClusterActivityStream,
 			TypeName: "aws_rds_cluster_activity_stream",
+			Name:     "Cluster Activity Stream",
 		},
 		{
 			Factory:  resourceClusterEndpoint,
@@ -255,11 +278,12 @@ func (p *servicePackage) SDKResources(ctx context.Context) []*types.ServicePacka
 			},
 		},
 		{
-			Factory:  ResourceGlobalCluster,
+			Factory:  resourceGlobalCluster,
 			TypeName: "aws_rds_global_cluster",
+			Name:     "Global Cluster",
 		},
 		{
-			Factory:  ResourceReservedInstance,
+			Factory:  resourceReservedInstance,
 			TypeName: "aws_rds_reserved_instance",
 			Name:     "Reserved Instance",
 			Tags: &types.ServicePackageResourceTags{
